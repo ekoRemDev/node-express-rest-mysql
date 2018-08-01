@@ -63,9 +63,27 @@ app.get('/create', (req, res) => {
     let nameValue = "member name 2";
     let surnameValue = "member surname";
     let instrumentsValue = "member instruments";
-    // let nameValue = req.body.create_name;
-    // let surnameValue = req.body.create_surname;
-    // let instrumentsValue = req.body.create_instruments;
+
+    const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
+    connection.query(queryInsert, [nameValue, surnameValue, instrumentsValue], (err, results, field) => {
+        if (err) {
+            console.log('Error Occured :' + err.message);
+            res.sendStatus(500);
+            return
+        }
+
+        console.log("New Data Inserted Into Table");
+        res.redirect('/list');
+        res.end();
+    });
+});
+
+// Create new data in table from Fom
+app.post('/create', (req, res) => {
+    // we use static data at the moment, after some implementations we ll get data from form
+    let nameValue = req.body.create_name;
+    let surnameValue = req.body.create_surname;
+    let instrumentsValue = req.body.create_instruments;
 
     const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
     connection.query(queryInsert, [nameValue, surnameValue, instrumentsValue], (err, results, field) => {
