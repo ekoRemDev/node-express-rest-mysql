@@ -61,7 +61,7 @@ app.get('/create/', (req, res) => {
     });
 });
 
-//Read data from table based on /id
+//Read data from table based on given /id
 app.get('/read/:id', (req, res) => {
     let memberID = req.params.id;
     const querySelect = "SELECT * FROM members WHERE id = ?";
@@ -80,7 +80,7 @@ app.get('/read/:id', (req, res) => {
     });
 });
 
-// Update data based on /id
+// Update data based on given /id
 app.get('/update/:id', (req, res) => {
     let memberID = req.params.id;
     const querySelect = "SELECT * FROM members WHERE id = ?";
@@ -109,6 +109,7 @@ app.get('/update/:id', (req, res) => {
     let newSurname = "New Surname";
     let newInstruments = "New Instruments";
     let newId = 6;
+    // end of static data
 
     const queryUpdate = "UPDATE members SET name = ?, surname=?, instruments=? WHERE id=?";
     connection.query(queryUpdate, [newName, newSurname, newInstruments, newId], (err, rows, field) => {
@@ -133,10 +134,15 @@ app.get('/update/:id', (req, res) => {
 
 });
 
-// Delete data based on /id
+// Delete data based on given /id
 app.get('/delete/:id', (req, res) => {
     res.send('delete');
 });
+
+// Not Found Route
+app.get('*',(req,res)=>{
+    res.send('What Is Wrong With You!')
+})
 
 
 // Todo 3- We create server and run it
