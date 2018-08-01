@@ -6,6 +6,7 @@ const app = express();
 const mysql = require('mysql');
 
 
+
 // Todo 4- Route
 app.get('/', (req, res) => {
     res.send('Main Page');
@@ -29,7 +30,6 @@ const connection = getMySqlConnection();
 
 // List all data from mysql database
 app.get('/list/', (req, res) => {
-    // res.send('List');
     const queryList = "SELECT * FROM members";
     connection.query(queryList, function (err, rows, field) {
         if (err) {
@@ -43,7 +43,24 @@ app.get('/list/', (req, res) => {
 
 // Create new data in table
 app.get('/create/', (req, res) => {
-    res.send('Create');
+    // we use static data at the moment, after some implementations we ll get data from form
+    let nameValue = "member name";
+    let surnameValue = "member surname";
+    let instrumentsValue = "member instruments";
+
+    const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
+
+    connection.query(queryInsert,[nameValue,surnameValue,instrumentsValue],(err, results,field)=>{
+        if(err){
+            console.log('Error Occured :' + err.message);
+            res.sendStatus(500);
+            return
+        }
+
+        console.log("New Data Inserted Into Table");
+        res.redirect('/list');
+        res.end();
+    });
 });
 
 //Read data from table based on /id
