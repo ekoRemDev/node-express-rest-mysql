@@ -6,16 +6,26 @@ const app = express();
 const mysql = require('mysql');
 // Todo 8- We will use filesystem
 const fs = require('fs');
+// Todo 9 - We will use this to use form elements
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+// Todo 10 - it is used for static content
+app.use(express.static(__dirname + '/public'));
+// Todo 11 - Morgan for detailed console message
+const morgan = require('morgan');
+// app.use(morgan('combined'));
+app.use(morgan('short'));
 
 
 // Todo 4- Route
 app.get('/', (req, res) => {
     // res.send('Main Page');
-    fs.readFile('message.html',(err,html)=>{
+    fs.readFile('./public/message.html',(err,html)=>{
         res.writeHeader(200, {"Content-Type": "text/html"});
         res.write(html);
         res.end();
     });
+    // res.render('message.html');
 });
 
 
@@ -36,7 +46,7 @@ const connection = getMySqlConnection();
 
 // List all data from mysql database
 app.get('/list/', (req, res) => {
-    const queryList = "SELECT * FROM members";
+    const queryList = "SELECT * FROM members ORDER BY id desc";
     connection.query(queryList, function (err, rows, field) {
         if (err) {
             console.log('there is error : ' + err)
@@ -48,11 +58,14 @@ app.get('/list/', (req, res) => {
 });
 
 // Create new data in table
-app.get('/create/', (req, res) => {
+app.get('/create', (req, res) => {
     // we use static data at the moment, after some implementations we ll get data from form
-    let nameValue = "member name";
+    let nameValue = "member name 2";
     let surnameValue = "member surname";
     let instrumentsValue = "member instruments";
+    // let nameValue = req.body.create_name;
+    // let surnameValue = req.body.create_surname;
+    // let instrumentsValue = req.body.create_instruments;
 
     const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
     connection.query(queryInsert, [nameValue, surnameValue, instrumentsValue], (err, results, field) => {
