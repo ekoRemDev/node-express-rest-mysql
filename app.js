@@ -49,7 +49,6 @@ app.get('/create/', (req, res) => {
     let instrumentsValue = "member instruments";
 
     const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
-
     connection.query(queryInsert,[nameValue,surnameValue,instrumentsValue],(err, results,field)=>{
         if(err){
             console.log('Error Occured :' + err.message);
@@ -65,7 +64,22 @@ app.get('/create/', (req, res) => {
 
 //Read data from table based on /id
 app.get('/read/:id', (req, res) => {
-    res.send('Read');
+    // res.send('Read');
+    let memberID = req.params.id;
+    const querySelect = "SELECT * FROM members WHERE id = ?";
+    connection.query(querySelect,[memberID],(err,rows,field)=>{
+        if(err){
+            console.log('Error Occured : ' + err.message);
+            res.sendStatus(500);
+            return
+        }
+        if(rows.length === 0 ){
+            res.send('Oooppps No Data Related id : ' + memberID );
+        }else{
+            console.log('Selected data is shown');
+            res.json(rows);
+        }
+    });
 });
 
 // Update data based on /id
