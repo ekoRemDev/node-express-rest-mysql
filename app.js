@@ -4,11 +4,18 @@ const express = require('express');
 const app = express();
 // Todo 5- we'll use MySql
 const mysql = require('mysql');
+// Todo 8- We will use filesystem
+const fs = require('fs');
 
 
 // Todo 4- Route
 app.get('/', (req, res) => {
-    res.send('Main Page');
+    // res.send('Main Page');
+    fs.readFile('message.html',(err,html)=>{
+        res.writeHeader(200, {"Content-Type": "text/html"});
+        res.write(html);
+        res.end();
+    });
 });
 
 
@@ -136,13 +143,27 @@ app.get('/update/:id', (req, res) => {
 
 // Delete data based on given /id
 app.get('/delete/:id', (req, res) => {
-    res.send('delete');
+    let memberID = req.params.id;
+    const querySelect = "DELETE FROM members WHERE id = ?";
+    connection.query(querySelect, [memberID], (err, rows, field) => {
+        if (err) {
+            console.log('Error Occured : ' + err.message);
+            res.sendStatus(500);
+            return
+        }
+        if (rows.length === 0) {
+            res.send('Oooppps No Data Related id : ' + memberID);
+        } else {
+            console.log('Selected data is Deleted');
+            res.send(memberID + ' is DELETED');
+        }
+    });
 });
 
 // Not Found Route
 app.get('*',(req,res)=>{
     res.send('What Is Wrong With You!')
-})
+});
 
 
 // Todo 3- We create server and run it
