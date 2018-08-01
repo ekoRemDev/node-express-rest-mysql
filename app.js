@@ -6,7 +6,6 @@ const app = express();
 const mysql = require('mysql');
 
 
-
 // Todo 4- Route
 app.get('/', (req, res) => {
     res.send('Main Page');
@@ -49,8 +48,8 @@ app.get('/create/', (req, res) => {
     let instrumentsValue = "member instruments";
 
     const queryInsert = "INSERT INTO members (name,surname,instruments) VALUES (?,?,?)";
-    connection.query(queryInsert,[nameValue,surnameValue,instrumentsValue],(err, results,field)=>{
-        if(err){
+    connection.query(queryInsert, [nameValue, surnameValue, instrumentsValue], (err, results, field) => {
+        if (err) {
             console.log('Error Occured :' + err.message);
             res.sendStatus(500);
             return
@@ -64,18 +63,17 @@ app.get('/create/', (req, res) => {
 
 //Read data from table based on /id
 app.get('/read/:id', (req, res) => {
-    // res.send('Read');
     let memberID = req.params.id;
     const querySelect = "SELECT * FROM members WHERE id = ?";
-    connection.query(querySelect,[memberID],(err,rows,field)=>{
-        if(err){
+    connection.query(querySelect, [memberID], (err, rows, field) => {
+        if (err) {
             console.log('Error Occured : ' + err.message);
             res.sendStatus(500);
             return
         }
-        if(rows.length === 0 ){
-            res.send('Oooppps No Data Related id : ' + memberID );
-        }else{
+        if (rows.length === 0) {
+            res.send('Oooppps No Data Related id : ' + memberID);
+        } else {
             console.log('Selected data is shown');
             res.json(rows);
         }
@@ -84,7 +82,55 @@ app.get('/read/:id', (req, res) => {
 
 // Update data based on /id
 app.get('/update/:id', (req, res) => {
-    res.send('Update');
+    let memberID = req.params.id;
+    const querySelect = "SELECT * FROM members WHERE id = ?";
+    connection.query(querySelect, [memberID], (err, rows, field) => {
+        if (err) {
+            console.log('Error Occured : ' + err.message);
+            res.sendStatus(500);
+            return
+        }
+        if (rows.length === 0) {
+            res.send('Oooppps No Data Related id : ' + memberID);
+        } else {
+            console.log('Selected data is shown');
+
+            let oldName = rows[0].name;
+            let oldSurname = rows[0].surname;
+            let oldInstruments = rows[0].instruments;
+            console.log(oldName + " " + oldSurname + " - " + oldInstruments);
+
+            res.json(rows);
+        }
+    });
+
+    // we use static data at the moment we'll add form and then get value from form
+    let newName = "New Name";
+    let newSurname = "New Surname";
+    let newInstruments = "New Instruments";
+    let newId = 6;
+
+    const queryUpdate = "UPDATE members SET name = ?, surname=?, instruments=? WHERE id=?";
+    connection.query(queryUpdate, [newName, newSurname, newInstruments, newId], (err, rows, field) => {
+        if (err) {
+            console.log('Error Occured : ' + err.message);
+            res.sendStatus(500);
+            return
+        }
+        if (rows.length === 0) {
+            res.send('Oooppps No Data Related id : ' + memberID);
+        } else {
+            console.log('Selected data is updated');
+        }
+    });
+
+
+    /*
+     Todo ? after operation it has to show new set of data
+     instead of selecting and updating values, we can use Just sql UPDATE syntax
+      */
+
+
 });
 
 // Delete data based on /id
