@@ -36,7 +36,7 @@ function getMySqlConnection() {
         host: 'localhost',
         user: 'root',
         pass: '',
-        database: 'node_express_rest_mysql'
+        database: 'local_restapi'
     })
 };
 
@@ -186,7 +186,7 @@ app.get('/delete/:id', (req, res) => {
             res.send('Oooppps No Data Related id : ' + memberID);
         } else {
             console.log('Selected data is Deleted');
-            res.send(memberID + ' is DELETED');
+            res.send(memberID + ' is DELETED');node
         }
     });
 });
